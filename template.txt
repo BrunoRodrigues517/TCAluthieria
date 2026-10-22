@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCAluthieria</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header>
+        <h1 class="tit">Luthieria Rodrigues</h1>
+    </header>
+    <nav>
+
+    </nav>
+    <hr>
+    <main>
+    
+    </main>
+    <br>
+    <hr>
+    <br>
+    <footer>
+        <p>Site feito para Trabalho de Conclusão de Ano(TCA) da disciplina de Banco de Dados.</p>
+        <p>Site feito por Bruno da Silva Rodrigues.</p>
+    </footer>
+</body>
+</html>
