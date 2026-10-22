@@ -6,7 +6,7 @@ em outros projetos
 
 html {
     font-family: monospace, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif, sans-serif;
-    background-color: var(--secondary-color);
+    background-color: var(--background);
     color: var(--dark-color);
 }
 
