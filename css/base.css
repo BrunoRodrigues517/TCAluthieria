@@ -1,0 +1,25 @@
+/* customização de elementos básicos (normalmente tags)
+html, body, p, h1, h2, h3, h4, h5, h6, table, th, td
+Este arquivo pode ser reutilizado (com poucas modificações) 
+em outros projetos
+*/
+
+html {
+    font-family: monospace, 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif, sans-serif;
+    background-color: var(--secondary-color);
+    color: var(--dark-color);
+}
+
+hr {
+    border: var(--primary-color) 1px solid;
+}
+
+p {
+    text-indent: 6.7vw;
+    margin-bottom: 30px;
+}
+
+main{
+    align-items: center;
+    align-content: center;
+}

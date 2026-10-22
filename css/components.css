@@ -1,0 +1,30 @@
+/* Variáveis CSS 
+As váriáveis armazenam valores que podem ser reutilizados 
+em todo o projeto. Ajudam a manter a consistência e 
+facilitam a manutenção do código.
+Esta estrutura pode ser reutilizada em outros projetos, 
+mas os valores são específicos para este projeto.
+*/
+
+.tit {  
+    color: var(--primary-color); 
+    font-size: 2.5em; 
+    text-align: center;
+    justify-content: center;
+}
+
+.subtit {  
+    color: var(--primary-color); 
+    font-size: 2.0em; 
+    text-align: center;
+}
+
+.navs{
+    margin-top: 5px;
+    text-align: center;
+    flex: 1 1 0;
+    min-width: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

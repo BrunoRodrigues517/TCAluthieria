@@ -1,0 +1,43 @@
+header {
+    border: 4px var(--primary-color) solid;
+    position: sticky;
+    top: 0;
+    z-index: 11;
+    background-color: var(--light-color);
+    overflow: hidden;
+    height: 6rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3px;
+    position: sticky;
+    top: 100px; 
+    z-index: 10;
+    gap: 4px;
+}
+
+nav a {
+    color: var(--primary-color);
+    text-decoration: none;
+    background-color: var(--light-color);
+    border: 3px solid var(--dark-color);
+    gap:1px;
+    padding: 5px;
+}
+
+nav a:hover{
+    background-color: var(--secondary-color);
+}
+
+footer {
+    text-align: center;
+    font-size: 12px;
+}
