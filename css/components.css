@@ -28,3 +28,118 @@ mas os valores são específicos para este projeto.
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.imgtxt {
+    width: 5rem;
+    height: 5rem;
+}
+
+#imgtit {
+    width: 5rem;
+    height: 5rem;
+    animation: balanco .3s ease-in-out infinite alternate;
+    transform-origin: center;
+}
+
+@keyframes balanco {
+    from {
+        transform: rotate(-3deg);
+    }
+
+    to {
+        transform: rotate(3deg);
+    }
+}
+
+.exemplo {
+    width: 67vw;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.formulario-layout {
+    align-items: center;
+    justify-content: center;
+    width: min(67%, 75rem);
+    margin:2rem auto;
+}
+
+.formulario {
+    display: grid;
+    gap: 1rem;
+}
+
+.formulario__grupo {
+    min-width: 0;
+    margin: 0;
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 6px;
+}
+
+.formulario__grupo legend {
+    padding: 0 0.5rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.formulario__campo {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+}
+
+.formulario__campo--completo {
+    grid-column: 1 / -1;
+}
+
+.formulario__campo input:not([type="radio"]):not([type="checkbox"]),
+.formulario__campo select,
+.formulario__campo textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 0.65rem;
+    border: 1px solid var(--dark-color);
+    border-radius: 4px;
+    font: inherit;
+}
+
+.formulario__campo textarea {
+    resize: vertical;
+}
+
+.formulario__rotulo {
+    font-weight: bold;
+}
+
+.formulario__opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.formulario__opcao,
+.formulario__opcoes label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.formulario__botao {
+    justify-self: start;
+    padding: 0.75rem 1.25rem;
+    color: var(--light-color);
+    background-color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.formulario__botao:hover {
+    color: var(--dark-color);
+    background-color: var(--secondary-color);
+}
+
