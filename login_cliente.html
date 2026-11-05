@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCAluthieria</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header>
+        <h1 class="tit">Luthieria Rodrigues</h1>
+    </header>
+    <nav>
+        <a class="navs" href="registrar_cliente.html">Cadastro</a>
+        <a class="navs" href="index.html">Página inicial</a>
+    </nav>
+    <hr>
+    <main>
+        <section id="form1">
+			<h2 class="tit">Entrar</h2>
+			<!-- O CSS Grid posiciona a figura e o formulário lado a lado em telas grandes. -->
+			<div class="formulario-layout">
+				<!-- figure agrupa a imagem e sua legenda; o alt descreve o gráfico para leitores de tela. -->
+
+				<!-- O formulário usa GET para demonstrar o envio dos dados pela URL. -->
+				<form class="formulario" action="#" method="get">
+					<!-- fieldset e legend agrupam campos relacionados e identificam cada conjunto. -->
+					<fieldset class="formulario__grupo">
+						<legend>Seus dados</legend>
+						<div class="formulario__campos">
+							<div class="formulario__campo">
+								<label for="email">E-mail</label>
+								<!-- O tipo email permite ao navegador validar o formato do endereço. -->
+								<input type="email" id="email" name="email" autocomplete="email" required>
+							</div>
+                            <div class="formulario__campo">
+                            <label for="email">Senha</label>
+                            <!-- O tipo email permite ao navegador validar o formato do endereço. -->
+                            <input type="password" id="email" name="email" autocomplete="email" required>
+							</div>
+						</div>
+					</fieldset>
+					<!-- O botão envia as informações após a validação dos campos obrigatórios. -->
+					<button class="formulario__botao" type="submit">Entrar</button>
+				</form>
+			</div>
+		</section>
+    </main>
+    <br>
+    <hr>
+    <br>
+    <footer>
+        <p>Site feito para Trabalho de Conclusão de Ano(TCA) da disciplina de Banco de Dados.</p>
+        <p>Site feito por Bruno da Silva Rodrigues.</p>
+    </footer>
+    <script>
+		const formulario = document.querySelector(".formulario");
+
+		if (formulario) {
+			const campos = formulario.querySelectorAll("input, select, textarea");
+			const atualizaMensagem = (campo) => {
+				campo.setCustomValidity("");
+
+				if (campo.validity.valueMissing) {
+					campo.setCustomValidity("Por favor, preencha este campo.");
+				} else if (campo.type === "email" && campo.validity.typeMismatch) {
+					campo.setCustomValidity("Por favor, informe um endereço de e-mail válido.");
+				}
+			};
+
+			campos.forEach((campo) => {
+				atualizaMensagem(campo);
+				campo.addEventListener("input", () => atualizaMensagem(campo));
+				campo.addEventListener("change", () => atualizaMensagem(campo));
+			});
+		}
+	</script>
+</body>
+</html>
