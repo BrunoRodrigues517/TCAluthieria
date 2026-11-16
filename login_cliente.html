@@ -22,8 +22,7 @@
 			<div class="formulario-layout">
 				<!-- figure agrupa a imagem e sua legenda; o alt descreve o gráfico para leitores de tela. -->
 
-				<!-- O formulário usa GET para demonstrar o envio dos dados pela URL. -->
-				<form class="formulario" action="#" method="get">
+				<form class="formulario" id="form-login">
 					<!-- fieldset e legend agrupam campos relacionados e identificam cada conjunto. -->
 					<fieldset class="formulario__grupo">
 						<legend>Seus dados</legend>
@@ -33,15 +32,14 @@
 								<!-- O tipo email permite ao navegador validar o formato do endereço. -->
 								<input type="email" id="email" name="email" autocomplete="email" required>
 							</div>
-                            <div class="formulario__campo">
-                            <label for="email">Senha</label>
-                            <!-- O tipo email permite ao navegador validar o formato do endereço. -->
-                            <input type="password" id="email" name="email" autocomplete="email" required>
+							<div class="formulario__campo">
+								<label for="senha">Senha</label>
+								<input type="password" id="senha" name="senha" autocomplete="current-password" required>
 							</div>
 						</div>
 					</fieldset>
-					<!-- O botão envia as informações após a validação dos campos obrigatórios. -->
 					<button class="formulario__botao" type="submit">Entrar</button>
+					<p id="mensagem-login" role="alert" aria-live="polite"></p>
 				</form>
 			</div>
 		</section>
@@ -53,27 +51,6 @@
         <p>Site feito para Trabalho de Conclusão de Ano(TCA) da disciplina de Banco de Dados.</p>
         <p>Site feito por Bruno da Silva Rodrigues.</p>
     </footer>
-    <script>
-		const formulario = document.querySelector(".formulario");
-
-		if (formulario) {
-			const campos = formulario.querySelectorAll("input, select, textarea");
-			const atualizaMensagem = (campo) => {
-				campo.setCustomValidity("");
-
-				if (campo.validity.valueMissing) {
-					campo.setCustomValidity("Por favor, preencha este campo.");
-				} else if (campo.type === "email" && campo.validity.typeMismatch) {
-					campo.setCustomValidity("Por favor, informe um endereço de e-mail válido.");
-				}
-			};
-
-			campos.forEach((campo) => {
-				atualizaMensagem(campo);
-				campo.addEventListener("input", () => atualizaMensagem(campo));
-				campo.addEventListener("change", () => atualizaMensagem(campo));
-			});
-		}
-	</script>
+	<script type="module" src="js/login.js"></script>
 </body>
 </html>
