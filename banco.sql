@@ -1,5 +1,5 @@
 create table cliente (
-    cpf char(11) not null primary key,
+    cpf char(11) unique not null primary key,
     nome varchar(100) not null,
     nascimento date not null,
     email varchar(150) not null,
@@ -11,7 +11,13 @@ create table cliente (
 create unique index if not exists cliente_email_unico
     on cliente (lower(email));
 
-create table tipo_instrumento (
+create table tipo_instrumento_estoque (
+    id serial not null primary key,
+    nome varchar(25) not null,
+    descricao text
+);
+
+create table tipo_instrumento_conserto (
     id serial not null primary key,
     nome varchar(25) not null,
     descricao text
@@ -20,15 +26,16 @@ create table tipo_instrumento (
 create table instrumento_estoque (
     id serial primary key,
     modelo varchar(125) not null,
-    tipo_id integer not null references tipo_instrumento(id),
+    tipo_id integer not null references tipo_instrumento_estoque(id),
     preco numeric(10, 2) not null check (preco >= 0)
 );
 
-create table instrumento_resenha (
-    autor char(11) primary key not null references cliente(cpf),
-    avaliado integer references instrumento_estoque(id),
+create table resenha (
+    autor char(11) not null references cliente(cpf),
+    avaliado integer not null references instrumento_estoque(id),
     nota integer not null check (nota >= 0 and nota <= 10),
-    resenha text not null
+    resenha text,
+    primary key (autor, avaliado)
 );
 
 create table instrumento_conserto (
@@ -36,7 +43,7 @@ create table instrumento_conserto (
     modelo varchar(125) not null,
     estado text not null check (estado in ('nao reparado', 'em conserto', 'reparado')),
     enviado_por char(11) not null references cliente(cpf),
-    tipo_id integer not null references tipo_instrumento(id)
+    tipo_id integer not null references tipo_instrumento_conserto(id)
 );
 
 create table entrega (
