@@ -16,16 +16,29 @@
     </nav>
     <hr>
     <main>
+        <p id="cliente-logado" class="cliente-logado" role="status">Você está logado como:</p>
         <!-- parte de loja -->
         <section>
             <h2 class="subtit">Instrumentos a venda:</h2>
-            <!-- após aprender a usar o supabase, adicionar os instrumentos catalogados -->
-            <p> EXEMPLO DE TEXTO, IGNORAR Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, rerum. Similique dolorem tempora sint reprehenderit ratione quas vel est harum? Repellat reprehenderit repellendus fugiat minima aperiam amet nam perferendis fugit?</p>
+            <p id="mensagem-estoque" class="mensagem-estoque" role="status">
+                Carregando instrumentos...
+            </p>
+            <ul id="lista-instrumentos" class="lista-instrumentos" aria-live="polite"></ul>
+            <div class="paginacao-estoque" aria-label="Paginação do estoque" hidden>
+                <button id="pagina-anterior" class="formulario__botao" type="button">Página anterior</button>
+                <span id="indicador-pagina" class="indicador-pagina" aria-live="polite"></span>
+                <button id="pagina-seguinte" class="formulario__botao" type="button">Avançar página</button>
+            </div>
         </section>
 		<section>
 			<h2 class="subtit">Finalizar compra:</h2>
-            <p> EXEMPLO DE TEXTO, IGNORAR Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, rerum. Similique dolorem tempora sint reprehenderit ratione quas vel est harum? Repellat reprehenderit repellendus fugiat minima aperiam amet nam perferendis fugit?</p>
-			<!-- Adicionar depois em JS a consulta do banco para verificar se a compra é válida, e para registrar a compra no banco de dados -->
+            <p id="mensagem-carrinho" class="mensagem-carrinho" role="status">
+                Seu carrinho está vazio.
+            </p>
+            <ul id="lista-carrinho" class="lista-carrinho" aria-live="polite"></ul>
+            <div id="resumo-carrinho" class="resumo-carrinho" hidden>
+                <strong>Total: <span id="total-carrinho"></span></strong>
+            </div>
 		</section>
     </main>
     <br>
@@ -35,5 +48,6 @@
         <p>Site feito para Trabalho de Conclusão de Ano(TCA) da disciplina de Banco de Dados.</p>
         <p>Site feito por: Bruno da Silva Rodrigues.</p>
     </footer>
+    <script type="module" src="js/estoque-compra.js"></script>
 </body>
 </html>
