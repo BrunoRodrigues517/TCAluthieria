@@ -32,6 +32,10 @@ async function fazerLogin(evento) {
 			return;
 		}
 
+		sessionStorage.setItem("clienteLogado", JSON.stringify({
+			cpf: data.cpf,
+			email
+		}));
 		window.location.href = "pagina_cliente.html";
 	} catch (error) {
 		console.error("Erro ao conectar com o Supabase:", error);

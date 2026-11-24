@@ -35,7 +35,9 @@ async function registrarCliente(evento) {
 	};
 
 	try {
-		const { error } = await supabase.from("cliente").insert(cliente);
+		const { error } = await supabase
+			.from("cliente")
+			.insert(cliente);
 
 		if (error) {
 			if (error.code === "23505") {
@@ -47,8 +49,12 @@ async function registrarCliente(evento) {
 			return;
 		}
 
-		mensagem.textContent = "Cadastro realizado com sucesso. Você já pode fazer login.";
-		formulario.reset();
+		sessionStorage.setItem("clienteLogado", JSON.stringify({
+			cpf: cliente.cpf,
+			email: cliente.email
+		}));
+
+		window.location.href = "pagina_cliente.html";
 	} catch (error) {
 		console.error("Erro ao conectar com o Supabase:", error);
 		mensagem.textContent = `Erro de conexão: ${error.message}`;
