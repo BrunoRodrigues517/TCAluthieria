@@ -143,3 +143,169 @@ mas os valores são específicos para este projeto.
     background-color: var(--secondary-color);
 }
 
+.mensagem-estoque {
+    text-align: center;
+}
+
+.mensagem-estoque--erro {
+    color: #a40000;
+}
+
+.lista-instrumentos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    width: min(67%, 75rem);
+    margin: 1.5rem auto;
+    padding: 0;
+    list-style: none;
+}
+
+@media (orientation: landscape) {
+    .lista-instrumentos {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+.instrumento-card {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 6px;
+}
+
+.instrumento-card__modelo,
+.instrumento-card__tipo {
+    margin: 0;
+}
+
+.instrumento-card__modelo {
+    color: var(--primary-color);
+}
+
+.instrumento-card__preco {
+    font-size: 1.25rem;
+}
+
+.instrumento-card__botao {
+    justify-self: stretch;
+    width: 100%;
+}
+
+.instrumento-card__botao:disabled {
+    opacity: 0.75;
+    cursor: default;
+}
+
+.paginacao-estoque {
+    display: flex;
+    position: static;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: min(67%, 75rem);
+    margin: 1.5rem auto;
+}
+
+.paginacao-estoque[hidden] {
+    display: none;
+}
+
+.indicador-pagina {
+    text-align: center;
+}
+
+.paginacao-estoque .formulario__botao:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.mensagem-carrinho {
+    text-align: center;
+}
+
+.cliente-logado {
+    width: min(67%, 75rem);
+    margin: 1.5rem auto;
+    color: var(--primary-color);
+    font-weight: bold;
+    text-align: center;
+}
+
+.lista-carrinho {
+    display: grid;
+    gap: 0.75rem;
+    width: min(67%, 75rem);
+    margin: 1.5rem auto;
+    padding: 0;
+    list-style: none;
+}
+
+.item-carrinho {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 6px;
+}
+
+.item-carrinho__modelo,
+.item-carrinho__detalhes {
+    margin: 0;
+}
+
+.item-carrinho__modelo {
+    color: var(--primary-color);
+}
+
+.item-carrinho__controles {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.item-carrinho__quantidade {
+    min-width: 2rem;
+    text-align: center;
+}
+
+.botao-quantidade-carrinho,
+.botao-remover-carrinho {
+    min-height: 2.25rem;
+    padding: 0.4rem 0.75rem;
+    color: var(--light-color);
+    background-color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.botao-quantidade-carrinho {
+    min-width: 2.25rem;
+    padding-inline: 0.5rem;
+}
+
+.resumo-carrinho {
+    width: min(67%, 75rem);
+    margin: 1rem auto;
+    text-align: right;
+    font-size: 1.25rem;
+}
+
+@media (max-width: 700px) {
+    .item-carrinho {
+        grid-template-columns: 1fr;
+    }
+
+    .item-carrinho__controles {
+        justify-content: flex-start;
+    }
+}
+
