@@ -18,8 +18,20 @@
     <hr>
     <main>
         <!-- Parte de estoque -->
-        <section>
+        <section id="pesquisa-estoque">
             <h2 class="subtit"> Visualização de Estoque:</h2>
+            <div class="filtros-estoque">
+                <div class="formulario__campo">
+                    <label for="pesquisa-estoque-nome">Pesquisar por nome ou modelo</label>
+                    <input id="pesquisa-estoque-nome" type="search" placeholder="Digite o nome ou modelo do instrumento">
+                </div>
+                <div class="formulario__campo">
+                    <label for="filtro-estoque-tipo">Filtrar por tipo</label>
+                    <select id="filtro-estoque-tipo">
+                        <option value="">Todos os tipos</option>
+                    </select>
+                </div>
+            </div>
             <p id="mensagem-estoque-gerente" class="mensagem-estoque" role="status">
                 Carregando instrumentos...
             </p>
