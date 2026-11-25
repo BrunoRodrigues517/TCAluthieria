@@ -19,16 +19,44 @@
     <main>
         <section>
             <h2 class="subtit">Saldo:</h2>
-            <!-- valor recebido com vendas -->
-            <!-- valor recebido com consertos de instrumentos -->
-            <!-- adicionar valor bruto recebido -->
+            <div class="resumo-saldo">
+                <article class="saldo-card">
+                    <h3>Todo o dinheiro ganho no total</h3>
+                    <p id="saldo-total" class="saldo-card__valor">Carregando...</p>
+                </article>
+                <article class="saldo-card">
+                    <h3>Dinheiro ganho com compras</h3>
+                    <p id="saldo-compras" class="saldo-card__valor">Carregando...</p>
+                </article>
+                <article class="saldo-card">
+                    <h3>Dinheiro ganho com reparos</h3>
+                    <p id="saldo-reparos" class="saldo-card__valor">Carregando...</p>
+                </article>
+            </div>
+            <p id="mensagem-saldo" class="mensagem-estoque" role="status" aria-live="polite"></p>
         </section>
         <br>
         <hr>
         <br>
         <section>
-        <h2 class="subtit">Histórico de compras:</h2>
-        <!-- Após aprender Supabase fazer as consultas em JS no SQL para mostrar as comprar já efetuadas -->
+            <h2 class="subtit">Histórico de compras e entregas:</h2>
+            <p id="mensagem-historico" class="mensagem-estoque" role="status" aria-live="polite">
+                Carregando histórico...
+            </p>
+            <div id="historico-tabela-container" class="historico-tabela-container" hidden>
+                <table class="tabela-historico">
+                    <thead>
+                        <tr>
+                            <th scope="col">Registro</th>
+                            <th scope="col">Data</th>
+                            <th scope="col">Instrumento</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historico-tabela-corpo"></tbody>
+                </table>
+            </div>
         </section>
     </main>
     <br>
@@ -38,5 +66,6 @@
         <p>Site feito para Trabalho de Conclusão de Ano(TCA) da disciplina de Banco de Dados.</p>
         <p>Site feito por Bruno da Silva Rodrigues.</p>
     </footer>
+    <script type="module" src="js/historico-saldo.js"></script>
 </body>
 </html>
