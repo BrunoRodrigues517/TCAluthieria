@@ -94,6 +94,98 @@ mas os valores são específicos para este projeto.
     grid-column: 1 / -1;
 }
 
+.filtros-estoque {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1rem;
+    width: min(90%, 50rem);
+    margin: 1.5rem auto;
+}
+
+.resumo-saldo {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: min(90%, 50rem);
+    margin: 1.5rem auto;
+}
+
+.saldo-card {
+    padding: 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.saldo-card h3 {
+    margin-top: 0;
+}
+
+.saldo-card__valor {
+    margin-bottom: 0;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.historico-tabela-container {
+    width: min(95%, 75rem);
+    margin: 1.5rem auto;
+    overflow-x: auto;
+}
+
+.tabela-historico {
+    width: 100%;
+    min-width: 48rem;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.tabela-historico th:nth-child(1),
+.tabela-historico td:nth-child(1) {
+    width: 15%;
+}
+
+.tabela-historico th:nth-child(2),
+.tabela-historico td:nth-child(2) {
+    width: 19%;
+}
+
+.tabela-historico th:nth-child(3),
+.tabela-historico td:nth-child(3) {
+    width: 20%;
+}
+
+.tabela-historico th:nth-child(4),
+.tabela-historico td:nth-child(4) {
+    width: 31%;
+}
+
+.tabela-historico th:nth-child(5),
+.tabela-historico td:nth-child(5) {
+    width: 15%;
+}
+
+.tabela-historico th,
+.tabela-historico td {
+    padding: 0.75rem;
+    border: 1px solid var(--primary-color);
+    text-align: left;
+}
+
+.tabela-historico th {
+    color: var(--light-color);
+    background-color: var(--primary-color);
+}
+
+.tabela-historico tbody tr:nth-child(even) {
+    background-color: var(--secondary-color);
+}
+
+.formulario__ajuda {
+    margin: 0;
+}
+
 .formulario__campo input:not([type="radio"]):not([type="checkbox"]),
 .formulario__campo select,
 .formulario__campo textarea {
@@ -170,6 +262,11 @@ mas os valores são específicos para este projeto.
 .lista-estoque-gerente,
 .lista-instrumentos--venda {
     width: min(90%, 75rem);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+}
+
+.lista-instrumentos--conserto {
+    width: min(90%, 75rem);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
 }
 
@@ -182,7 +279,8 @@ mas os valores são específicos para este projeto.
 }
 
 .instrumento-card__modelo,
-.instrumento-card__tipo {
+.instrumento-card__tipo,
+.instrumento-card__cliente {
     margin: 0;
 }
 
@@ -190,13 +288,21 @@ mas os valores são específicos para este projeto.
     color: var(--primary-color);
 }
 
+.instrumento-card__estado {
+    margin: 0;
+    font-weight: bold;
+}
+
 .lista-estoque-gerente .instrumento-card,
-.lista-instrumentos--venda .instrumento-card {
+.lista-instrumentos--venda .instrumento-card,
+.lista-instrumentos--conserto .instrumento-card {
     min-width: 0;
 }
 
 .lista-estoque-gerente .instrumento-card__modelo,
-.lista-instrumentos--venda .instrumento-card__modelo {
+.lista-instrumentos--venda .instrumento-card__modelo,
+.lista-instrumentos--conserto .instrumento-card__modelo,
+.lista-instrumentos--conserto .instrumento-card__cliente {
     overflow-wrap: anywhere;
 }
 
@@ -204,7 +310,7 @@ mas os valores são específicos para este projeto.
     font-size: 1.25rem;
 }
 
-.estoque-card__quantidade {
+.estoque-card__status {
     margin: 0;
     font-weight: bold;
 }
