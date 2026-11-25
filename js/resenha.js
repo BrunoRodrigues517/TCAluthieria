@@ -104,6 +104,18 @@ export function criarSecaoResenha(instrumentoId, resenhasIniciais, erroCarregame
 	const secao = document.createElement("section");
 	secao.className = "avaliacoes-instrumento";
 
+	const botaoAlternar = document.createElement("button");
+	botaoAlternar.className = "formulario__botao avaliacoes-instrumento__alternar";
+	botaoAlternar.type = "button";
+	botaoAlternar.textContent = "Ver avaliações";
+	botaoAlternar.setAttribute("aria-expanded", "false");
+
+	const conteudo = document.createElement("div");
+	conteudo.className = "avaliacoes-instrumento__conteudo";
+	conteudo.id = `conteudo-avaliacoes-${instrumentoId}`;
+	conteudo.hidden = true;
+	botaoAlternar.setAttribute("aria-controls", conteudo.id);
+
 	const titulo = document.createElement("h4");
 	titulo.className = "avaliacoes-instrumento__titulo";
 	titulo.textContent = "Avaliações";
@@ -262,7 +274,15 @@ export function criarSecaoResenha(instrumentoId, resenhasIniciais, erroCarregame
 		}
 	});
 
+	botaoAlternar.addEventListener("click", () => {
+		const aberto = conteudo.hidden;
+		conteudo.hidden = !aberto;
+		botaoAlternar.setAttribute("aria-expanded", String(aberto));
+		botaoAlternar.textContent = aberto ? "Ocultar avaliações" : "Ver avaliações";
+	});
+
 	formulario.append(campoNota, campoTexto, botaoEnviar, botaoExcluir);
-	secao.append(titulo, listaResenhas, formulario, mensagem);
+	conteudo.append(titulo, listaResenhas, formulario, mensagem);
+	secao.append(botaoAlternar, conteudo);
 	return secao;
 }
