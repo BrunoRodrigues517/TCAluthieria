@@ -2,11 +2,12 @@ import { supabase } from "./conexao.js";
 
 const listaEstoque = document.querySelector("#lista-estoque-gerente");
 const mensagemEstoque = document.querySelector("#mensagem-estoque-gerente");
+const campoPesquisa = document.querySelector("#pesquisa-estoque-nome");
+const filtroTipo = document.querySelector("#filtro-estoque-tipo");
 const navegacaoPaginacao = document.querySelector(".paginacao-estoque");
 const botaoAnterior = document.querySelector("#pagina-anterior-gerente");
 const botaoSeguinte = document.querySelector("#pagina-seguinte-gerente");
 const indicadorPagina = document.querySelector("#indicador-pagina-gerente");
-const telaHorizontal = window.matchMedia("(orientation: landscape)");
 
 const formatadorPreco = new Intl.NumberFormat("pt-BR", {
 	style: "currency",
@@ -14,32 +15,8 @@ const formatadorPreco = new Intl.NumberFormat("pt-BR", {
 });
 
 let instrumentos = [];
+let instrumentosFiltrados = [];
 let paginaAtual = 1;
-
-function agruparInstrumentos(instrumentosCarregados) {
-	const grupos = new Map();
-
-	for (const instrumento of instrumentosCarregados) {
-		const preco = Number(instrumento.preco);
-		const tipoId = instrumento.tipo?.id ?? instrumento.tipo_id;
-		const chave = JSON.stringify([instrumento.modelo, tipoId, preco]);
-		let grupo = grupos.get(chave);
-
-		if (!grupo) {
-			grupo = {
-				modelo: instrumento.modelo,
-				tipo: instrumento.tipo?.nome ?? "Tipo não informado",
-				preco,
-				instrumentos: []
-			};
-			grupos.set(chave, grupo);
-		}
-
-		grupo.instrumentos.push({ id: instrumento.id });
-	}
-
-	return [...grupos.values()];
-}
 
 async function carregarEstoque() {
 	mensagemEstoque.hidden = false;
@@ -61,9 +38,9 @@ async function carregarEstoque() {
 			return false;
 		}
 
-		instrumentos = agruparInstrumentos(data ?? []);
-		paginaAtual = Math.min(paginaAtual, Math.max(1, Math.ceil(instrumentos.length / obterItensPorPagina())));
-		mostrarPaginaAtual();
+		instrumentos = data ?? [];
+		preencherFiltroTipos();
+		aplicarFiltros();
 		return true;
 	} catch (error) {
 		console.error("Erro ao conectar com o Supabase:", error);
@@ -75,9 +52,58 @@ async function carregarEstoque() {
 	}
 }
 
+function preencherFiltroTipos() {
+	const tipoSelecionado = filtroTipo.value;
+	const tipos = [...new Set(
+		instrumentos
+			.map((instrumento) => instrumento.tipo?.nome)
+			.filter(Boolean)
+	)].sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+	const opcaoTodos = document.createElement("option");
+	opcaoTodos.value = "";
+	opcaoTodos.textContent = "Todos os tipos";
+	filtroTipo.replaceChildren(
+		opcaoTodos,
+		...tipos.map((tipo) => {
+			const opcao = document.createElement("option");
+			opcao.value = tipo;
+			opcao.textContent = tipo;
+			return opcao;
+		})
+	);
+
+	if (tipos.includes(tipoSelecionado)) {
+		filtroTipo.value = tipoSelecionado;
+	}
+}
+
+function normalizarTexto(texto) {
+	return texto
+		.normalize("NFD")
+		.replace(/[\u0300-\u036f]/g, "")
+		.toLocaleLowerCase("pt-BR");
+}
+
+function aplicarFiltros() {
+	const termo = normalizarTexto(campoPesquisa.value.trim());
+	const tipoSelecionado = filtroTipo.value;
+
+	instrumentosFiltrados = instrumentos.filter((instrumento) => {
+		const nome = normalizarTexto(instrumento.modelo);
+		const tipo = instrumento.tipo?.nome ?? "";
+		return nome.includes(termo) && (!tipoSelecionado || tipo === tipoSelecionado);
+	});
+
+	paginaAtual = 1;
+	mostrarPaginaAtual();
+}
+
 function obterItensPorPagina() {
-	const colunas = telaHorizontal.matches ? 5 : 3;
-	return colunas * 10;
+	const colunas = window.getComputedStyle(listaEstoque).gridTemplateColumns
+		.trim()
+		.split(/\s+/).length;
+	return Math.max(1, colunas) * 3;
 }
 
 function mostrarPaginaAtual() {
@@ -90,14 +116,23 @@ function mostrarPaginaAtual() {
 		return;
 	}
 
+	if (instrumentosFiltrados.length === 0) {
+		mensagemEstoque.hidden = false;
+		mensagemEstoque.className = "mensagem-estoque";
+		mensagemEstoque.textContent = "Nenhum instrumento encontrado com esses filtros.";
+		navegacaoPaginacao.hidden = true;
+		listaEstoque.replaceChildren();
+		return;
+	}
+
 	const itensPorPagina = obterItensPorPagina();
-	const totalPaginas = Math.ceil(instrumentos.length / itensPorPagina);
+	const totalPaginas = Math.ceil(instrumentosFiltrados.length / itensPorPagina);
 	const inicio = (paginaAtual - 1) * itensPorPagina;
-	const instrumentosDaPagina = instrumentos.slice(inicio, inicio + itensPorPagina);
+	const instrumentosDaPagina = instrumentosFiltrados.slice(inicio, inicio + itensPorPagina);
 
 	mensagemEstoque.hidden = true;
 	listaEstoque.replaceChildren(
-		...instrumentosDaPagina.map((grupo) => criarItemEstoque(grupo))
+		...instrumentosDaPagina.map((instrumento) => criarItemEstoque(instrumento))
 	);
 
 	navegacaoPaginacao.hidden = totalPaginas === 1;
@@ -106,86 +141,80 @@ function mostrarPaginaAtual() {
 	indicadorPagina.textContent = `Página ${paginaAtual} de ${totalPaginas}`;
 }
 
-function criarItemEstoque(grupo) {
+function criarItemEstoque(instrumento) {
 	const item = document.createElement("li");
 	item.className = "instrumento-card";
 
 	const modelo = document.createElement("h3");
 	modelo.className = "instrumento-card__modelo";
-	modelo.textContent = grupo.modelo;
+	modelo.textContent = instrumento.modelo;
 
 	const tipo = document.createElement("p");
 	tipo.className = "instrumento-card__tipo";
-	tipo.textContent = grupo.tipo;
+	tipo.textContent = instrumento.tipo?.nome ?? "Tipo não informado";
 
 	const preco = document.createElement("strong");
 	preco.className = "instrumento-card__preco";
-	preco.textContent = formatadorPreco.format(grupo.preco);
+	preco.textContent = formatadorPreco.format(Number(instrumento.preco));
 
-	const quantidade = document.createElement("p");
-	quantidade.className = "estoque-card__quantidade";
-	quantidade.textContent = `Quantidade em estoque: ${grupo.instrumentos.length}`;
+	const statusEstoque = document.createElement("p");
+	statusEstoque.className = "estoque-card__status";
+	statusEstoque.textContent = "Em estoque";
 
 	const botaoRemover = document.createElement("button");
 	botaoRemover.className = "formulario__botao instrumento-card__botao";
 	botaoRemover.type = "button";
-	botaoRemover.textContent = "Remover 1 unidade";
-	botaoRemover.setAttribute("aria-label", `Remover uma unidade de ${grupo.modelo}`);
-	botaoRemover.addEventListener("click", () => removerUnidade(grupo, botaoRemover));
+	botaoRemover.textContent = "Remover do estoque";
+	botaoRemover.setAttribute("aria-label", `Remover ${instrumento.modelo} do estoque`);
+	botaoRemover.addEventListener("click", () => removerInstrumento(instrumento, botaoRemover));
 
-	item.append(modelo, tipo, preco, quantidade, botaoRemover);
+	item.append(modelo, tipo, preco, statusEstoque, botaoRemover);
 	return item;
 }
 
-async function removerUnidade(grupo, botaoRemover) {
+async function removerInstrumento(instrumento, botaoRemover) {
 	botaoRemover.disabled = true;
 	mensagemEstoque.hidden = false;
 	mensagemEstoque.className = "mensagem-estoque";
-	mensagemEstoque.textContent = `Removendo uma unidade de ${grupo.modelo}...`;
+	mensagemEstoque.textContent = `Removendo ${instrumento.modelo} do estoque...`;
 
-	let encontrouReferencia = false;
 	try {
-		for (const instrumento of grupo.instrumentos) {
-			const { data, error } = await supabase
-				.from("instrumento_estoque")
-				.delete()
-				.eq("id", instrumento.id)
-				.select("id")
-				.maybeSingle();
+		const { data, error } = await supabase
+			.from("instrumento_estoque")
+			.delete()
+			.eq("id", instrumento.id)
+			.select("id")
+			.maybeSingle();
 
-			if (error) {
-				if (error.code === "23503") {
-					encontrouReferencia = true;
-					continue;
-				}
-
-				console.error("Erro ao remover o instrumento do estoque:", error);
+		if (error) {
+			if (error.code === "23503") {
 				mensagemEstoque.className = "mensagem-estoque mensagem-estoque--erro";
-				mensagemEstoque.textContent = "Não foi possível remover o instrumento do estoque.";
+				mensagemEstoque.textContent = "Não é possível remover este instrumento porque há compras ou avaliações vinculadas.";
 				return;
 			}
 
-			if (!data) {
-				continue;
-			}
-
-			const estoqueAtualizado = await carregarEstoque();
-			if (estoqueAtualizado) {
-				mensagemEstoque.hidden = false;
-				mensagemEstoque.className = "mensagem-estoque";
-				mensagemEstoque.textContent = `Uma unidade de ${grupo.modelo} foi removida do estoque.`;
-			} else {
-				mensagemEstoque.hidden = false;
-				mensagemEstoque.className = "mensagem-estoque mensagem-estoque--erro";
-				mensagemEstoque.textContent = `Uma unidade de ${grupo.modelo} foi removida, mas não foi possível atualizar a lista. Recarregue a página.`;
-			}
+			console.error("Erro ao remover o instrumento do estoque:", error);
+			mensagemEstoque.className = "mensagem-estoque mensagem-estoque--erro";
+			mensagemEstoque.textContent = "Não foi possível remover o instrumento do estoque.";
 			return;
 		}
 
-		mensagemEstoque.className = "mensagem-estoque mensagem-estoque--erro";
-		mensagemEstoque.textContent = encontrouReferencia
-			? "Não é possível remover este instrumento porque há compras ou avaliações vinculadas."
-			: "O instrumento não foi encontrado no estoque.";
+		if (!data) {
+			mensagemEstoque.className = "mensagem-estoque mensagem-estoque--erro";
+			mensagemEstoque.textContent = "O instrumento não foi encontrado no estoque.";
+			return;
+		}
+
+		const estoqueAtualizado = await carregarEstoque();
+		if (estoqueAtualizado) {
+			mensagemEstoque.hidden = false;
+			mensagemEstoque.className = "mensagem-estoque";
+			mensagemEstoque.textContent = `${instrumento.modelo} foi removido do estoque.`;
+		} else {
+			mensagemEstoque.hidden = false;
+			mensagemEstoque.className = "mensagem-estoque mensagem-estoque--erro";
+			mensagemEstoque.textContent = `${instrumento.modelo} foi removido, mas não foi possível atualizar a lista. Recarregue a página.`;
+		}
 	} catch (error) {
 		console.error("Erro ao conectar com o Supabase:", error);
 		mensagemEstoque.className = "mensagem-estoque mensagem-estoque--erro";
@@ -205,7 +234,10 @@ botaoSeguinte.addEventListener("click", () => {
 	mostrarPaginaAtual();
 });
 
-telaHorizontal.addEventListener("change", () => {
+campoPesquisa.addEventListener("input", aplicarFiltros);
+filtroTipo.addEventListener("change", aplicarFiltros);
+
+window.addEventListener("resize", () => {
 	paginaAtual = 1;
 	mostrarPaginaAtual();
 });
