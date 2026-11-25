@@ -198,6 +198,89 @@ mas os valores são específicos para este projeto.
     cursor: default;
 }
 
+.avaliacoes-instrumento {
+    display: grid;
+    gap: 0.6rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--primary-color);
+}
+
+.avaliacoes-instrumento__titulo,
+.avaliacoes-instrumento__media,
+.avaliacoes-instrumento__item p {
+    margin: 0;
+}
+
+.avaliacoes-instrumento__estrelas {
+    position: relative;
+    display: inline-block;
+    color: #d3d3d3;
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.avaliacoes-instrumento__estrelas::before {
+    content: "★★★★★";
+}
+
+.avaliacoes-instrumento__estrelas::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--nota-percentual);
+    overflow: hidden;
+    color: #d99a00;
+    content: "★★★★★";
+    white-space: nowrap;
+}
+
+.avaliacoes-instrumento__lista {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.avaliacoes-instrumento__item {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    background-color: var(--light-color);
+    border-radius: 4px;
+}
+
+.avaliacoes-instrumento__formulario {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.avaliacoes-instrumento__campo {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.avaliacoes-instrumento__campo select,
+.avaliacoes-instrumento__campo textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 0.5rem;
+    border: 1px solid var(--dark-color);
+    border-radius: 4px;
+    font: inherit;
+}
+
+.avaliacoes-instrumento__campo textarea {
+    resize: vertical;
+}
+
+.avaliacoes-instrumento__mensagem {
+    margin: 0;
+}
+
 .paginacao-estoque {
     display: flex;
     position: static;
@@ -275,6 +358,19 @@ mas os valores são específicos para este projeto.
     text-align: center;
 }
 
+.item-carrinho__pagamento {
+    display: grid;
+    gap: 0.25rem;
+    font-weight: bold;
+}
+
+.item-carrinho__seletor-pagamento {
+    padding: 0.4rem;
+    border: 1px solid var(--dark-color);
+    border-radius: 4px;
+    font: inherit;
+}
+
 .botao-quantidade-carrinho,
 .botao-remover-carrinho {
     min-height: 2.25rem;
@@ -293,10 +389,19 @@ mas os valores são específicos para este projeto.
 }
 
 .resumo-carrinho {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
     width: min(67%, 75rem);
     margin: 1rem auto;
     text-align: right;
     font-size: 1.25rem;
+}
+
+.resumo-carrinho[hidden] {
+    display: none;
 }
 
 @media (max-width: 700px) {
