@@ -167,6 +167,12 @@ mas os valores são específicos para este projeto.
     }
 }
 
+.lista-estoque-gerente,
+.lista-instrumentos--venda {
+    width: min(90%, 75rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
 .instrumento-card {
     display: grid;
     gap: 0.75rem;
@@ -184,8 +190,23 @@ mas os valores são específicos para este projeto.
     color: var(--primary-color);
 }
 
+.lista-estoque-gerente .instrumento-card,
+.lista-instrumentos--venda .instrumento-card {
+    min-width: 0;
+}
+
+.lista-estoque-gerente .instrumento-card__modelo,
+.lista-instrumentos--venda .instrumento-card__modelo {
+    overflow-wrap: anywhere;
+}
+
 .instrumento-card__preco {
     font-size: 1.25rem;
+}
+
+.estoque-card__quantidade {
+    margin: 0;
+    font-weight: bold;
 }
 
 .instrumento-card__botao {
@@ -203,6 +224,16 @@ mas os valores são específicos para este projeto.
     gap: 0.6rem;
     padding-top: 0.75rem;
     border-top: 1px solid var(--primary-color);
+}
+
+.avaliacoes-instrumento__conteudo {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.avaliacoes-instrumento__conteudo[hidden],
+.avaliacoes-instrumento__formulario[hidden] {
+    display: none;
 }
 
 .avaliacoes-instrumento__titulo,
