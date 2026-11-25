@@ -20,18 +20,47 @@
         <!-- Parte de estoque -->
         <section>
             <h2 class="subtit"> Visualização de Estoque:</h2>
+            <p id="mensagem-estoque-gerente" class="mensagem-estoque" role="status">
+                Carregando instrumentos...
+            </p>
+            <ul id="lista-estoque-gerente" class="lista-instrumentos lista-estoque-gerente" aria-live="polite"></ul>
+            <div class="paginacao-estoque" aria-label="Paginação do estoque" hidden>
+                <button id="pagina-anterior-gerente" class="formulario__botao" type="button">Página anterior</button>
+                <span id="indicador-pagina-gerente" class="indicador-pagina" aria-live="polite"></span>
+                <button id="pagina-seguinte-gerente" class="formulario__botao" type="button">Avançar página</button>
+            </div>
         </section>
         <br>
         <hr>
         <br>
         <section>
             <h2 class="subtit">Adicionar Item Novo ao Estoque:</h2>
-        </section>
-        <br>
-        <hr>
-        <br>
-        <section>
-            <h2 class="subtit">Remover Item do Catálogo</h2>
+            <div class="formulario-layout">
+                <form id="form-adicionar-estoque" class="formulario">
+                    <div class="formulario__campo">
+                        <label for="modelo-instrumento">Modelo</label>
+                        <input id="modelo-instrumento" name="modelo" type="text" maxlength="125" required>
+                    </div>
+                    <div class="formulario__campo">
+                        <label for="tipo-instrumento">Tipo existente</label>
+                        <select id="tipo-instrumento" name="tipo">
+                            <option value="">Selecione um tipo</option>
+                        </select>
+                    </div>
+                    <div class="formulario__campo">
+                        <label for="novo-tipo-instrumento">Registrar novo tipo (opcional)</label>
+                        <input id="novo-tipo-instrumento" name="novo-tipo" type="text" maxlength="25">
+                        <small>Se preenchido, o novo tipo será usado neste instrumento.</small>
+                    </div>
+                    <div class="formulario__campo">
+                        <label for="preco-instrumento">Preço</label>
+                        <input id="preco-instrumento" name="preco" type="text" inputmode="decimal" maxlength="11" required>
+                        <small>Use vírgula ou ponto como separador decimal. Exemplo: 123,45.</small>
+                    </div>
+                    <button class="formulario__botao" type="submit" disabled>Adicionar ao estoque</button>
+                </form>
+                <p id="mensagem-adicionar-estoque" role="status" aria-live="polite"></p>
+            </div>
         </section>
     </main>
     <br>
@@ -41,5 +70,7 @@
         <p>Site feito para Trabalho de Conclusão de Ano(TCA) da disciplina de Banco de Dados.</p>
         <p>Site feito por: Bruno da Silva Rodrigues.</p>
     </footer>
+    <script type="module" src="js/estoque-visualizacao.js"></script>
+    <script type="module" src="js/estoque-adicao.js"></script>
 </body>
 </html>
