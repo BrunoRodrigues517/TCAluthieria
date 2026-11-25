@@ -14,7 +14,6 @@ const totalCarrinho = document.querySelector("#total-carrinho");
 const botaoFinalizarCompra = document.querySelector("#finalizar-compra");
 const mensagemCompra = document.querySelector("#mensagem-compra");
 const textoClienteLogado = document.querySelector("#cliente-logado");
-const telaHorizontal = window.matchMedia("(orientation: landscape)");
 
 const formatadorPreco = new Intl.NumberFormat("pt-BR", {
 	style: "currency",
@@ -362,8 +361,10 @@ async function carregarInstrumentos() {
 }
 
 function obterItensPorPagina() {
-	const colunas = telaHorizontal.matches ? 5 : 3;
-	return colunas * 10;
+	const colunas = window.getComputedStyle(listaInstrumentos).gridTemplateColumns
+		.trim()
+		.split(/\s+/).length;
+	return Math.max(1, colunas) * 3;
 }
 
 function mostrarPaginaAtual() {
@@ -450,7 +451,7 @@ botaoSeguinte.addEventListener("click", () => {
 
 botaoFinalizarCompra.addEventListener("click", finalizarCompra);
 
-telaHorizontal.addEventListener("change", () => {
+window.addEventListener("resize", () => {
 	paginaAtual = 1;
 	mostrarPaginaAtual();
 });
