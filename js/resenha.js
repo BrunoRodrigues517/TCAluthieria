@@ -141,6 +141,10 @@ export function criarSecaoResenha(instrumentoId, resenhasIniciais, erroCarregame
 	const seletorNota = document.createElement("select");
 	seletorNota.id = idNota;
 	seletorNota.required = true;
+	const mensagemNotaInvalida = "Selecione uma nota entre 0 e 10.";
+	const atualizarValidadeNota = () => {
+		seletorNota.setCustomValidity(seletorNota.value ? "" : mensagemNotaInvalida);
+	};
 	const opcaoInicial = document.createElement("option");
 	opcaoInicial.value = "";
 	opcaoInicial.textContent = "Selecione uma nota";
@@ -154,6 +158,8 @@ export function criarSecaoResenha(instrumentoId, resenhasIniciais, erroCarregame
 	if (resenhaDoCliente) {
 		seletorNota.value = String(resenhaDoCliente.nota);
 	}
+	atualizarValidadeNota();
+	seletorNota.addEventListener("change", atualizarValidadeNota);
 	campoNota.append(rotuloNota, seletorNota);
 
 	const campoTexto = document.createElement("div");
@@ -214,6 +220,7 @@ export function criarSecaoResenha(instrumentoId, resenhasIniciais, erroCarregame
 			resenhas = resenhas.filter((item) => item.autor !== cpfCliente);
 			mostrarResenhas(listaResenhas, resenhas);
 			seletorNota.value = "";
+			atualizarValidadeNota();
 			textoResenha.value = "";
 			botaoEnviar.textContent = "Enviar avaliação";
 			botaoExcluir.hidden = true;
