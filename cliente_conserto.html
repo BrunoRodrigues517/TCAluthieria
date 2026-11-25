@@ -16,19 +16,37 @@
     </nav>
     <hr>
     <main>
+        <p id="cliente-logado" class="cliente-logado" role="status">Você está logado como:</p>
         <!-- Parte destinada ao cliente enviar seu instrumento para a parte de reparos da loja (table instrumento_conserto) -->
         <section>
             <h2 class="subtit">Enviar para reparo:</h2>
             <p>Aqui você pode enviar o seu instrumento mais destruído possível para nós que iremos o devolver como se estivesse novo!</p>
+            <div class="formulario-layout">
+                <form id="form-envio-reparo" class="formulario">
+                    <div class="formulario__campo">
+                        <label for="modelo-reparo">Modelo do instrumento</label>
+                        <input id="modelo-reparo" name="modelo" type="text" maxlength="125" required>
+                    </div>
+                    <div class="formulario__campo">
+                        <label for="tipo-reparo">Tipo do instrumento</label>
+                        <select id="tipo-reparo" name="tipo" required disabled>
+                            <option value="">Selecione um tipo</option>
+                        </select>
+                    </div>
+                    <button class="formulario__botao" type="submit" disabled>Enviar instrumento</button>
+                </form>
+                <p id="mensagem-envio-reparo" role="status" aria-live="polite"></p>
+            </div>
         </section>
         <br>
         <hr>
         <!-- Parte destinada para o cliente ver seus instrumentos que foram enviados para o conserto/que foram devolvidos -->
         <section>
-            <h2 class="subtit">Seus intrumentos:</h2>
+            <h2 class="subtit">Seus instrumentos:</h2>
             <p>Aqui você pode ver seus instrumentos e seus estados para poder acompanhar como está indo o 
                 conserto de seus fiéis companheiros.</p>
-            <!-- Após aprender supabase, fazer a parte de envio do instrumento dos clientes -->
+            <p id="mensagem-instrumentos-reparo" role="status" aria-live="polite"></p>
+            <ul id="lista-instrumentos-reparo" class="lista-instrumentos lista-instrumentos--conserto"></ul>
         </section>
     </main>
     <br>
@@ -38,5 +56,6 @@
         <p>Site feito para Trabalho de Conclusão de Ano(TCA) da disciplina de Banco de Dados.</p>
         <p>Site feito por Bruno da Silva Rodrigues.</p>
     </footer>
+    <script type="module" src="js/envio-reparo.js"></script>
 </body>
 </html>
