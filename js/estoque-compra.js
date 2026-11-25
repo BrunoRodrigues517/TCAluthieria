@@ -1,4 +1,5 @@
 import { supabase } from "./conexao.js";
+import { carregarResenhas, criarSecaoResenha } from "./resenha.js";
 
 const listaInstrumentos = document.querySelector("#lista-instrumentos");
 const mensagemEstoque = document.querySelector("#mensagem-estoque");
@@ -10,6 +11,8 @@ const listaCarrinho = document.querySelector("#lista-carrinho");
 const mensagemCarrinho = document.querySelector("#mensagem-carrinho");
 const resumoCarrinho = document.querySelector("#resumo-carrinho");
 const totalCarrinho = document.querySelector("#total-carrinho");
+const botaoFinalizarCompra = document.querySelector("#finalizar-compra");
+const mensagemCompra = document.querySelector("#mensagem-compra");
 const textoClienteLogado = document.querySelector("#cliente-logado");
 const telaHorizontal = window.matchMedia("(orientation: landscape)");
 
@@ -20,7 +23,10 @@ const formatadorPreco = new Intl.NumberFormat("pt-BR", {
 
 let instrumentos = [];
 let paginaAtual = 1;
+let resenhasPorInstrumento = new Map();
+let erroAoCarregarResenhas = false;
 const chaveCarrinho = "carrinho-instrumentos";
+const opcoesPagamento = ["a vista", "2x", "4x", "6x", "8x"];
 
 async function carregarClienteLogado() {
 	let cliente;
@@ -64,8 +70,10 @@ function obterCarrinho() {
 function salvarCarrinho(carrinho) {
 	try {
 		localStorage.setItem(chaveCarrinho, JSON.stringify(carrinho));
+		return true;
 	} catch (error) {
 		console.error("Erro ao salvar o carrinho:", error);
+		return false;
 	}
 }
 
@@ -81,7 +89,8 @@ function adicionarAoCarrinho(instrumento) {
 			modelo: instrumento.modelo,
 			preco: Number(instrumento.preco),
 			tipo: instrumento.tipo?.nome ?? "Tipo não informado",
-			quantidade: 1
+			quantidade: 1,
+			pagamento: "a vista"
 		});
 	}
 
@@ -175,6 +184,45 @@ function criarItemCarrinho(item) {
 	subtotal.className = "item-carrinho__subtotal";
 	subtotal.textContent = formatadorPreco.format(Number(item.preco) * item.quantidade);
 
+	const pagamento = document.createElement("label");
+	pagamento.className = "item-carrinho__pagamento";
+	pagamento.textContent = "Pagamento";
+
+	const seletorPagamento = document.createElement("select");
+	seletorPagamento.className = "item-carrinho__seletor-pagamento";
+	seletorPagamento.setAttribute("aria-label", `Pagamento de ${item.modelo}`);
+	for (const opcao of opcoesPagamento) {
+		const elementoOpcao = document.createElement("option");
+		elementoOpcao.value = opcao;
+		elementoOpcao.textContent = opcao === "a vista" ? "À vista" : opcao;
+		seletorPagamento.append(elementoOpcao);
+	}
+	seletorPagamento.value = opcoesPagamento.includes(item.pagamento)
+		? item.pagamento
+		: "a vista";
+	seletorPagamento.addEventListener("change", () => {
+		const carrinhoAtualizado = obterCarrinho();
+		const itemAtualizado = carrinhoAtualizado.find((instrumento) => instrumento.id === item.id);
+
+		if (!itemAtualizado) {
+			return;
+		}
+
+		const pagamentoAnterior = itemAtualizado.pagamento;
+		itemAtualizado.pagamento = seletorPagamento.value;
+		if (!salvarCarrinho(carrinhoAtualizado)) {
+			itemAtualizado.pagamento = pagamentoAnterior;
+			seletorPagamento.value = opcoesPagamento.includes(pagamentoAnterior)
+				? pagamentoAnterior
+				: "a vista";
+			mensagemCompra.textContent = "Não foi possível salvar a forma de pagamento escolhida.";
+			return;
+		}
+
+		mensagemCompra.textContent = "";
+	});
+	pagamento.append(seletorPagamento);
+
 	const botaoRemover = document.createElement("button");
 	botaoRemover.className = "botao-remover-carrinho";
 	botaoRemover.type = "button";
@@ -182,7 +230,14 @@ function criarItemCarrinho(item) {
 	botaoRemover.setAttribute("aria-label", `Remover ${item.modelo} do carrinho`);
 	botaoRemover.addEventListener("click", () => removerDoCarrinho(item.id));
 
-	controles.append(botaoDiminuir, quantidade, botaoAumentar, subtotal, botaoRemover);
+	controles.append(
+		botaoDiminuir,
+		quantidade,
+		botaoAumentar,
+		subtotal,
+		pagamento,
+		botaoRemover
+	);
 	elemento.append(informacoes, controles);
 	return elemento;
 }
@@ -195,6 +250,77 @@ function criarBotaoQuantidade(texto, rotulo, acao) {
 	botao.setAttribute("aria-label", rotulo);
 	botao.addEventListener("click", acao);
 	return botao;
+}
+
+async function finalizarCompra() {
+	const carrinho = obterCarrinho();
+	if (carrinho.length === 0) {
+		mensagemCompra.textContent = "Adicione instrumentos ao carrinho antes de concluir a compra.";
+		return;
+	}
+
+	let cliente;
+	try {
+		cliente = JSON.parse(sessionStorage.getItem("clienteLogado") ?? "null");
+	} catch (error) {
+		console.error("Erro ao ler os dados da sessão:", error);
+	}
+
+	if (!cliente?.cpf) {
+		mensagemCompra.textContent = "Faça login novamente para concluir a compra.";
+		return;
+	}
+
+	const compras = [];
+	for (const item of carrinho) {
+		const instrumentoId = Number(item.id);
+		const quantidade = Number(item.quantidade);
+		const pagamento = opcoesPagamento.includes(item.pagamento) ? item.pagamento : "a vista";
+
+		if (!Number.isInteger(instrumentoId) || instrumentoId <= 0 ||
+			!Number.isInteger(quantidade) || quantidade <= 0) {
+			mensagemCompra.textContent = "Não foi possível validar os itens do carrinho.";
+			return;
+		}
+
+		for (let unidade = 0; unidade < quantidade; unidade += 1) {
+			compras.push({
+				feita_por: cliente.cpf,
+				instrumento_comprado: instrumentoId,
+				pagamento
+			});
+		}
+	}
+
+	botaoFinalizarCompra.disabled = true;
+	mensagemCompra.textContent = "Registrando sua compra...";
+	let compraRegistrada = false;
+	let carrinhoLimpo = false;
+	try {
+		const { error } = await supabase.from("compra").insert(compras);
+
+		if (error) {
+			console.error("Erro ao registrar a compra:", error);
+			mensagemCompra.textContent = "Não foi possível registrar a compra. Tente novamente.";
+			return;
+		}
+
+		compraRegistrada = true;
+		if (!salvarCarrinho([])) {
+			mostrarCarrinho();
+			mensagemCompra.textContent = "Compra registrada, mas não foi possível limpar o carrinho salvo neste navegador. Não tente concluir a compra novamente.";
+			return;
+		}
+		carrinhoLimpo = true;
+
+		mostrarCarrinho();
+		mensagemCompra.textContent = "Compra realizada com sucesso! Esperamos que você goste de nossos produtos.";
+	} catch (error) {
+		console.error("Erro ao conectar com o Supabase:", error);
+		mensagemCompra.textContent = "Não foi possível conectar ao serviço. Tente novamente.";
+	} finally {
+		botaoFinalizarCompra.disabled = compraRegistrada && !carrinhoLimpo;
+	}
 }
 
 async function carregarInstrumentos() {
@@ -217,6 +343,15 @@ async function carregarInstrumentos() {
 		}
 
 		instrumentos = data ?? [];
+		try {
+			resenhasPorInstrumento = await carregarResenhas(instrumentos.map((item) => item.id));
+			erroAoCarregarResenhas = false;
+		} catch (error) {
+			console.error("Erro ao carregar as avaliações:", error);
+			resenhasPorInstrumento = new Map();
+			erroAoCarregarResenhas = true;
+		}
+
 		paginaAtual = 1;
 		mostrarPaginaAtual();
 	} catch (error) {
@@ -293,7 +428,13 @@ function criarItemInstrumento(instrumento) {
 		}, 1200);
 	});
 
-	item.append(modelo, tipo, preco, botaoCarrinho);
+	const secaoResenhas = criarSecaoResenha(
+		instrumento.id,
+		resenhasPorInstrumento.get(instrumento.id) ?? [],
+		erroAoCarregarResenhas
+	);
+
+	item.append(modelo, tipo, preco, botaoCarrinho, secaoResenhas);
 	return item;
 }
 
@@ -306,6 +447,8 @@ botaoSeguinte.addEventListener("click", () => {
 	paginaAtual += 1;
 	mostrarPaginaAtual();
 });
+
+botaoFinalizarCompra.addEventListener("click", finalizarCompra);
 
 telaHorizontal.addEventListener("change", () => {
 	paginaAtual = 1;
